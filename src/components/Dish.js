@@ -61,6 +61,11 @@ const Dish = ({dish, dishes, setDishes, i}) => {
       // defaultValue is saved in innerHTML property
       tempCurrentIngridients = ingridientsInput.current.innerHTML
     }
+    // Do not permit empty values
+    if(!currentDishName || !currentIngridients) {
+        alert('Fill in empty fields!')
+        return
+    }
     // Change object values to temp ones
     dish.dishName = tempCurrentDishName
     dish.ingridients = tempCurrentIngridients
@@ -84,7 +89,6 @@ const Dish = ({dish, dishes, setDishes, i}) => {
     setCurrentDishName('')
     setCurrentIngridients('')
   }
-
 
   return (
     <>

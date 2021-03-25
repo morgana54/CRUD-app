@@ -36,7 +36,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem('dishes', JSON.stringify(dishes))
   }, [dishes])
-
+let x = 2;
   return (
       <Wrapper>
         <RecipesContainer>
@@ -62,15 +62,12 @@ function App() {
 
 export default App;
 
-// fajne efekty hoverowe: https://www.youtube.com/watch?v=Fp4PlygdV5E&ab_channel=CodingWithChaim 2:43 maybe worth na koniec żeby rozwinąć apke!!
-// memo do wykorzystania!!! gou 17:20 w filmiku wyżej
-// gou to jako zrozumienie: https://www.youtube.com/watch?v=uojLJFt9SzY&ab_channel=CodingWithChaim
-
-// - NA KONIEC MVP: zrób LocalStorage (last story)
 // - POTEM: ogarnij debugowanie i testowanie czy nie ma jakichś błędów niepotrzebnych
-//    - tutaj ogarnij też unit testy i nie pozwolenie na dodanie pustych stringów itp. itd.
+//    - tutaj ogarnij też UNIT TEST i WALIDACJE
+
 // - POTEM: dopracuj styl i UX, jak corsor pointer, zmiana dishName po kliknięciu itp.
 // - POTEM: porób duuuuuuużo komentarzy, żeby łatwiej było opowiadać co się w danym miejscu dzieje
+// - POTEM: dodać też taki sam guzik krzyżykowy z funkcją zamknięcia
 // - POTEM: ogarnij responsywność!
 // - POTEM: REFAKTOROWANIE
 // - POTEM: zapytaj trochę Kacpra i sam też wykmiń fajne unit testy!! (extra score!!)
@@ -82,6 +79,10 @@ export default App;
 
 // - obejrzyj tutoriale tak czy siak żeby się nauczyć i ewentualnie coś u siebie zmienić
 
+
+// fajne efekty hoverowe: https://www.youtube.com/watch?v=Fp4PlygdV5E&ab_channel=CodingWithChaim 2:43 maybe worth na koniec żeby rozwinąć apke!!
+// memo do wykorzystania!!! gou 17:20 w filmiku wyżej
+// gou to jako zrozumienie: https://www.youtube.com/watch?v=uojLJFt9SzY&ab_channel=CodingWithChaim
 
 // rady:
 // - REFAKTOROWANIE PO MVP GOU: przede wszystkim minimalizowanie użycia useState! + ulepszenia nazw funkcji itp.!

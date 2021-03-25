@@ -2,7 +2,6 @@ import Modal from 'react-modal'
 import React, {useState} from 'react'
 import styled from 'styled-components'
 
-
 // stylowanie na koniec!!
 // DODAĆ ŻEBY OD RAZU FOCUS BYŁ NA PRZEPISIE!!! gdzies na yt to było
 // const onButtonClick = () => {
@@ -38,6 +37,12 @@ const AddRecipeModal = ({dishes, setDishes}) => {
 
     // BĘDZIESZ MUSIAŁ DAĆ WALIDACJĘ RECIPE, bo np. jak naciśniesz Add recipe kiedy nie ma nic w polach to wyślą się ostatnie currentDishName i currentIngridients
     function handleAdd(e) {
+        // Do not permit empty values
+        if(!currentDishName || !currentIngridients) {
+            alert('Fill in empty fields!')
+            return
+        }
+        
         const newDish = {
             dishName: currentDishName,
             ingridients: currentIngridients,
@@ -79,7 +84,5 @@ const AddRecipeModal = ({dishes, setDishes}) => {
     </>
     );
 }
-
-// POTEM: dodać też taki sam guzik krzyżykowy z funkcją zamknięcia
  
 export default AddRecipeModal;
