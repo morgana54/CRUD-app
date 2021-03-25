@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import {useState} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import Modal from 'react-modal'
 
 // dodać potem media query, ale najpierw zapytać Marka czy responsywność na komórkę będzie miała być jakaś mega duża itp., ale może też po prostu będzie wystarczeć to co zrobiłeś
@@ -37,19 +37,35 @@ const DeleteBtn = styled.button`
 `
 
 const Dish = ({dish, dishes, setDishes, i}) => {
-
   const [isRecipeOpen, setIsRecipeOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [currentDishName, setCurrentDishName] = useState('')
   const [currentIngridients, setCurrentIngridients] = useState('')
+  const dishNameInput = useRef()
+  const ingridientsInput = useRef()
 
   // Map ingridients to paragraphs
   const ingridients = dish.ingridients.split(',').map(
     (ingridient => (<p key={ingridient + new Date().getTime()}>{ingridient}</p>)))
 
   function handleDishEdit(e) {
-    dish.dishName = currentDishName
-    dish.ingridients = currentIngridients
+    // Set temp values, so you can access changed current values before rendering
+    let tempCurrentDishName = currentDishName
+    let tempCurrentIngridients = currentIngridients
+    // If currentDishName and currentIngridients are empty strings (so are falsy) set them to defaultValues of input and textarea
+    if(!currentDishName) {
+      // defaultValue is saved in value property
+      tempCurrentDishName = dishNameInput.current.value
+    }
+    if(!currentIngridients) {
+      // defaultValue is saved in innerHTML property
+      tempCurrentIngridients = ingridientsInput.current.innerHTML
+    }
+    // Change object values to temp ones
+    dish.dishName = tempCurrentDishName
+    dish.ingridients = tempCurrentIngridients
+    // handleDishEdit does NOT actually change the state, so it has to be done (probably?) manually
+    localStorage.setItem('dishes', JSON.stringify(dishes))
     setIsEditModalOpen(false)
   }
 
@@ -68,6 +84,7 @@ const Dish = ({dish, dishes, setDishes, i}) => {
     setCurrentDishName('')
     setCurrentIngridients('')
   }
+
 
   return (
     <>
@@ -92,34 +109,23 @@ const Dish = ({dish, dishes, setDishes, i}) => {
         <input 
         type="text" 
         placeholder="Recipe Name" 
+        ref={dishNameInput}
         defaultValue={dish.dishName}
         onChange={handleDishNameChange} />
         <h2>Ingridients</h2>
         <textarea 
         type="text" 
         placeholder="Ingridients' Names (comma separated)" 
+        ref={ingridientsInput}
         defaultValue={dish.ingridients}
         onChange={handleIngridientsChange} />
         <button type="submit" onClick={handleDishEdit}>Edit recipe</button>
-        <button onClick={() => setIsEditModalOpen(false)}>Close</button>
+        <button onClick={() => {
+          setIsEditModalOpen(false)
+          }}>Close</button>
       </Modal>
     </>
   )
 }
  
 export default Dish;
-
-//  {/* tutaj możesz skorzystać z useContext!! do ingridients */}
-//  {isRecipeOpen && (
-//   <>
-//   <Ingridients 
-//   ingridients={ingridients} 
-//   i={i} 
-//   setCurrentDishName={setCurrentDishName} 
-//   currentDishName={currentDishName}
-//   recipesNames={recipesNames}
-//   setRecipesNames={setRecipesNames}
-//   currentIngridients={currentIngridients}
-//   setCurrentIngridients={setCurrentIngridients}
-//   setIngridients={setIngridients}/>
-//   {/* Edit */}

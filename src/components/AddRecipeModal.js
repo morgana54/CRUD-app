@@ -5,6 +5,10 @@ import styled from 'styled-components'
 
 // stylowanie na koniec!!
 // DODAĆ ŻEBY OD RAZU FOCUS BYŁ NA PRZEPISIE!!! gdzies na yt to było
+// const onButtonClick = () => {
+//     // `current` wskazuje na zamontowany element kontrolki formularza
+//     inputEl.current.focus();
+//   };
 
 // potem też postylować żeby ładnie dynamicznie sie zmieniał
 // ogarnąć potem jak tu nałożyć hover effect itp., przy active nie było outline itp.

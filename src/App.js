@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components'
 import Dish from './components/Dish'
 import AddRecipeModal from './components/AddRecipeModal';
-
-// export const RecipeContext = React.createContext()
 
 const Wrapper = styled.div`
   display: flex;
@@ -29,10 +27,17 @@ const RecipesContainer = styled.div`
 // color: ${false ? 'blue'  : 'red'}
 
 function App() {
-  const [dishes, setDishes] = useState([])
+    // If there are some dishes locally set them as initial value for dishes
+  const [dishes, setDishes] = useState(() => {
+    const localDishes = localStorage.getItem('dishes')
+    return localDishes ? JSON.parse(localDishes) : []
+  })
+  // Update local dishes everytime it changes
+  useEffect(() => {
+    localStorage.setItem('dishes', JSON.stringify(dishes))
+  }, [dishes])
 
   return (
-    // <RecipeContext.Provider value={{recipesNames, ingridients}}>
       <Wrapper>
         <RecipesContainer>
           {dishes.map((dish, i) => (
@@ -52,14 +57,10 @@ function App() {
         setDishes={setDishes}
         />
       </Wrapper>
-    // </RecipeContext.Provider>
   );
 }
 
 export default App;
-
-// CURRENT TASK: naprawić buga, gdzie po usunięciu jednego elementu i potem editowaniu dodają się puste nazwy! (pologuj prawie wszystko, może to jest index, moze to jest current dishName, chuj wie, pogrzeb w tym!) + jak się usunie wszystko i potem doda pust
-//  --> MOŻE DO TEGO UŻYJESZ useEffecta!!!!! ale sam nie wiesz, najpierw wszystko ładnie po loguj z nazwami 
 
 // fajne efekty hoverowe: https://www.youtube.com/watch?v=Fp4PlygdV5E&ab_channel=CodingWithChaim 2:43 maybe worth na koniec żeby rozwinąć apke!!
 // memo do wykorzystania!!! gou 17:20 w filmiku wyżej
@@ -69,6 +70,7 @@ export default App;
 // - POTEM: ogarnij debugowanie i testowanie czy nie ma jakichś błędów niepotrzebnych
 //    - tutaj ogarnij też unit testy i nie pozwolenie na dodanie pustych stringów itp. itd.
 // - POTEM: dopracuj styl i UX, jak corsor pointer, zmiana dishName po kliknięciu itp.
+// - POTEM: porób duuuuuuużo komentarzy, żeby łatwiej było opowiadać co się w danym miejscu dzieje
 // - POTEM: ogarnij responsywność!
 // - POTEM: REFAKTOROWANIE
 // - POTEM: zapytaj trochę Kacpra i sam też wykmiń fajne unit testy!! (extra score!!)
@@ -92,12 +94,5 @@ export default App;
 // - przenieś potem te komentarze do ggle keep
 
 // User Stories:
-
-// - I can create recipes that have names and ingredients. DONE
-// - I can see an index view where the names of all the recipes are visible. DONE
-// - I can click into any of those recipes to view it. DONE
-// - I can edit these recipes. DONE
-// - I can delete these recipes. DONE
-// - All new recipes I add are saved in my browser's local storage. If I refresh the page, these recipes will still be there
 
 // Unit tests will be extra scored :)
