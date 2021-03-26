@@ -58,7 +58,7 @@ const ModalInput = styled.input`
         outline: none;
     }
 `
-// tutaj na mobilkę dać na sam koniec media query żeby było dłuższe czy coś
+
 const ModalTextArea = styled.textarea`
     width: 90%;
     max-width: 90%;
@@ -93,13 +93,12 @@ const modalStyle = {
     }
 }
 
-const AddRecipeModal = ({dishes, setDishes}) => {
+const AddRecipeBtn = ({dishes, setDishes}) => {
 
     const [currentDishName, setCurrentDishName] = useState('')
     const [currentIngridients, setCurrentIngridients] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    // BĘDZIESZ MUSIAŁ DAĆ WALIDACJĘ RECIPE, bo np. jak naciśniesz Add recipe kiedy nie ma nic w polach to wyślą się ostatnie currentDishName i currentIngridients
     function handleAdd(e) {
         // Do not permit empty values
         if(!currentDishName || !currentIngridients) {
@@ -138,9 +137,8 @@ const AddRecipeModal = ({dishes, setDishes}) => {
     ariaHideApp={false}
     >
         <AddRecipeHeader>Add Recipe</AddRecipeHeader>
-        <h4>Recipe</h4>
+        <h4>Recipe Name</h4>
         <ModalInput type="text" placeholder="Recipe Name" onChange={handleRecipeChange}/>
-
         <h4>Ingridients</h4>
         <ModalTextArea type="text" placeholder="Ingridients' Names (comma separated)" onChange={handleIngridientsChange}/>
         <ButtonsWrapper>
@@ -152,4 +150,4 @@ const AddRecipeModal = ({dishes, setDishes}) => {
     );
 }
  
-export default AddRecipeModal;
+export default AddRecipeBtn;

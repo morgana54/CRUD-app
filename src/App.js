@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components'
 import Dish from './components/Dish'
-import AddRecipeModal from './components/AddRecipeModal';
+import AddRecipeBtn from './components/AddRecipeBtn';
 
 const Wrapper = styled.div`
   display: flex;
@@ -39,37 +39,34 @@ function App() {
   }, [dishes])
 
   const editDish = (dish) => {
-    // tutaj był ten problem referencji, że bez spread operatora nie działało, bo editedDishes dostawało taką samą referencję!!!
-    // const editedDishIndex = dishes.findIndex(d => d.id === dish.id);
-    // let editedDishes = [...dishes];
-    // editedDishes[editedDishIndex] = dish;
-    // setDishes(editedDishes);
-
-    // dokładnie to zrozmieć zanim zaimplementujesz w delete itp (W STASHU JEST JAK COŚ)
+    // Replace the passed dish with the one with same id
     setDishes(dishes.map(d => {
       return d.id === dish.id ? dish : d 
     }))
   }
 
-  // USUNĄĆ TEŻ TO 'i' i zamiast tego używać id!!
+  const deleteDish = (dish) => {
+    setDishes(dishes.filter(d => {
+      // Filter the passed dish out of the dishes
+      return d.id !== dish.id 
+    }))
+  }
 
   return (
       <Wrapper>
         <RecipesContainer>
-          {dishes.map((dish, i) => (
+          {dishes.map((dish) => (
             <>
               <Dish  
               key={dish.id}
-              i={i}
               dish={dish}
-              dishes={dishes}
-              setDishes={setDishes}
               editDish={editDish}
+              deleteDish={deleteDish}
               />
             </>
           ))}
         </RecipesContainer>
-        <AddRecipeModal 
+        <AddRecipeBtn 
         dishes={dishes}
         setDishes={setDishes}
         />
@@ -78,18 +75,3 @@ function App() {
 }
 
 export default App;
-
-// PO SKOŃCZENIU LOGIKI: 
- 
-// - POTEM: dać animację transition na rozwijające ingridients!!
-// - ZREFAKTORUJ STYLED COMPONENTS ŻEBY PRZY MODALACH SIĘ TAK CAŁKOWICIE NIE POWTARZAŁO
-
-// - MAYBE BONUSOWO: i to spytać Kacpra czy się da - ZROBIĆ HOOKA NA useRecipeModal czy coś żeby nie powtarzać bardzo podobnej logiki AddRecipeModal i EditRecipeModal w Ingridients
-//   - na koniec do ulepszenia: STWÓRZ WŁASNY HOOK! np. useHover czy coś w tym stylu
-
-// - POTEM: porób duuuuuuużo komentarzy, żeby łatwiej było opowiadać co się w danym miejscu dzieje
-// INFO PRZED SPOTKANIEM: musisz przejść przez cały kod i umieć o nim świetnie opowiedzieć --> zrobić to z Kacprem i Dziobakiem rehersal!!!!!! żeby pokazać że ci pomagali, ale tego się nauczyłeś i to rozumiesz!!
-
-// memo do wykorzystania!!! gou 17:20 w filmiku wyżej
-// gou to jako zrozumienie: https://www.youtube.com/watch?v=uojLJFt9SzY&ab_channel=CodingWithChaim
-// - na koniec spójrz czy nie możesz gdzieś dać useMemo lub useCallback!! albo zapytać Kacpra jak to dać --> żeby pokazać, że umiesz i przy okazji sobie powtórzyć

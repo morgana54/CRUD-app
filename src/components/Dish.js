@@ -1,7 +1,27 @@
 import styled from 'styled-components'
-import {useState, useRef} from 'react'
+import { useState, useRef } from 'react'
 import Modal from 'react-modal'
+import { Transition } from 'react-transition-group';
 
+// Set up transition
+const duration = 300;
+const defaultStyle = {
+  transition: `height ${duration}ms ease-in-out, opacity ${duration}ms ease-in-out`,
+  opacity: 0,
+  overflow: 'auto'
+}
+const transitionStyles = {
+  entering: { height: '250px',  opacity: '1'},
+  entered:  { height: '250px', opacity: '1'},
+  exiting:  { height: '0px', opacity: '0'},
+  exited:  { height: '0px', opacity: '0' },
+};
+
+/**
+ * @TODO
+ * Modal logic (styled components included) could (should!) be shared by one component! (passing props to one, and no props to the other)
+ * But you're just not going to do it given the time you've already dedicated to this project
+ */
 const DishName = styled.div`
   min-height: 30px;
   width: 70vw;
@@ -29,7 +49,6 @@ const IngridientsWrapper = styled.div`
   max-width: 1000px;
   margin-top: 10px;
   border-radius: 3px;
-  /* transition: 'height' 3s ease-in-out; */
 `
 
 const ButtonsWrapper = styled.div`
@@ -47,8 +66,6 @@ const Ingridient = styled.p`
   border-collapse: collapse;
   font-size: 0.9em;
 `
-// ustawić stan active, i jeśli jest active to ustaw DishName na   font-weight: bold;
-
 const Button = styled.button`
   min-width: 60px;
   padding: 10px;
@@ -68,7 +85,6 @@ const Button = styled.button`
 const EditBtn = styled(Button)`
   background-color: green;
 `
-// jak jest clicked to ooutline wyjeb!!
 
 const DeleteBtn = styled(Button)`
   background-color: rgb(223, 50, 50);
@@ -115,7 +131,7 @@ const ModalInput = styled.input`
         outline: none;
     }
 `
-// tutaj na mobilkę dać na sam koniec media query żeby było dłuższe czy coś
+
 const ModalTextArea = styled.textarea`
     width: 90%;
     max-width: 90%;
@@ -150,45 +166,30 @@ const modalStyle = {
   }
 }
 
-const Dish = ({dish, dishes, setDishes, i, editDish}) => {
-  const [isRecipeOpen, setIsRecipeOpen] = useState(false)
+const Dish = ({dish, editDish, deleteDish}) => {
+  const [isDishActive, setIsDishActive] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [currentDishName, setCurrentDishName] = useState('')
-  const [currentIngridients, setCurrentIngridients] = useState('')
+  // Initialize with current value
+  const [currentDishName, setCurrentDishName] = useState(dish.name)
+  const [currentIngridients, setCurrentIngridients] = useState(dish.ingridients)
   const dishNameInput = useRef()
   const ingridientsInput = useRef()
+  const [inProp, setInProp] = useState(false);
 
   // Map ingridients to paragraphs
   const ingridients = dish.ingridients.split(',').map(
     (ingridient => (<Ingridient key={ingridient + new Date().getTime()}>{ingridient}</Ingridient>)))
 
-  function handleDishEdit(e) {
-    // Set temp values, so you can access changed current values before rendering
-    let tempCurrentDishName = currentDishName
-    let tempCurrentIngridients = currentIngridients
-    // If currentDishName and currentIngridients are empty strings (so are falsy) set them to defaultValues of input and textarea
-    if(!currentDishName) {
-      // defaultValue is saved in value property
-      tempCurrentDishName = dishNameInput.current.value
-    }
-    if(!currentIngridients) {
-      // defaultValue is saved in innerHTML property
-      tempCurrentIngridients = ingridientsInput.current.innerHTML
-    }
-
+  function handleEditClick(e) {
     // Do not permit empty values
-    if(!tempCurrentDishName || !tempCurrentIngridients) {
+    if(!currentDishName || !currentIngridients) {
         alert('Fill in empty fields!')
         return
     }
-    // Change object values to temp ones
-    dish.name = tempCurrentDishName
-    dish.ingridients = tempCurrentIngridients
-    // handleDishEdit does NOT actually change the state, so it has to be done (probably?) manually
-    // localStorage.setItem('dishes', JSON.stringify(dishes))
-    editDish(dish);
-    
-
+    // Replace dish values with new ones
+    dish.name = currentDishName
+    dish.ingridients = currentIngridients
+    editDish(dish)
     setIsEditModalOpen(false)
   }
 
@@ -200,31 +201,32 @@ const Dish = ({dish, dishes, setDishes, i, editDish}) => {
     setCurrentIngridients(e.target.value)
   }
 
-  function deleteDish() {
-    const tempDishes = [...dishes]
-    tempDishes.splice(i, 1)
-    setDishes(tempDishes)
-    setCurrentDishName('')
-    setCurrentIngridients('')
+  function callDeleteDish() {
+    deleteDish(dish)
   }
 
   return (
     <>
-      <DishName isDishActive={isRecipeOpen} onClick={() => setIsRecipeOpen(!isRecipeOpen)}>
+      <DishName isDishActive={isDishActive} onClick={() => {
+        setInProp(!inProp)
+        setIsDishActive(!isDishActive)
+        }}>
         <span>{dish.name}</span>
       </DishName>
-      {isRecipeOpen 
-        &&
-      <IngridientsWrapper>
-        <h4>Ingridients</h4>
-        <hr/>
-        {ingridients}
-        <ButtonsWrapper>
-          <EditBtn onClick={() => setIsEditModalOpen(true)}>Edit</EditBtn>
-          <DeleteBtn onClick={deleteDish}>Delete</DeleteBtn>
-        </ButtonsWrapper>
-      </IngridientsWrapper>
-      }
+      <Transition in={inProp} timeout={duration}>
+        {state => (<IngridientsWrapper style={{
+            ...defaultStyle, 
+            ...transitionStyles[state]
+          }}>
+          <h4>Ingridients</h4>
+          <hr/>
+          {ingridients}
+          <ButtonsWrapper>
+            <EditBtn onClick={() => setIsEditModalOpen(true)}>Edit</EditBtn>
+            <DeleteBtn onClick={callDeleteDish}>Delete</DeleteBtn>
+          </ButtonsWrapper>
+        </IngridientsWrapper>)}
+      </Transition>
       <Modal 
       style={modalStyle}
       isOpen={isEditModalOpen}
@@ -232,7 +234,7 @@ const Dish = ({dish, dishes, setDishes, i, editDish}) => {
       ariaHideApp={false}
       >
         <EditRecipeHeader>Edit Recipe</EditRecipeHeader>
-        <h4>Recipe</h4>
+        <h4>Recipe Name</h4>
         <ModalInput 
         type="text" 
         placeholder="Recipe Name" 
@@ -247,7 +249,7 @@ const Dish = ({dish, dishes, setDishes, i, editDish}) => {
         defaultValue={dish.ingridients}
         onChange={handleIngridientsChange} />
         <ModalButtonsWrapper>
-          <ModalEditBtn type="submit" onClick={handleDishEdit}>Edit recipe</ModalEditBtn>
+          <ModalEditBtn type="submit" onClick={handleEditClick}>Edit recipe</ModalEditBtn>
           <ModalCloseBtn onClick={() => {
             setIsEditModalOpen(false)
             }}>Close</ModalCloseBtn>
