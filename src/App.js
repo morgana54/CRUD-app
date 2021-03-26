@@ -10,33 +10,49 @@ const Wrapper = styled.div`
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background-color: black;
+  background-color: white;
 `
-// dodać potem media query, ale najpierw zapytać Marka czy responsywność na komórkę będzie miała być jakaś mega duża itp., ale może też po prostu będzie wystarczeć to co zrobiłeś
-// na koniec musisz ogarnąć overflow scroll czy coś, albo żeby po prostu cały recipies container się wydłu
 const RecipesContainer = styled.div`
-  height: 500px;
-  width: 65vw;
-  max-width: 920px;
-  background-color: lightgray;
+  height: 700px;
+  width: 75vw;
+  max-width: 1100px;
+  background-color: rgb(220, 220, 220);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px 5px;
+  border: 1px solid rgb(200, 200, 200);
+  overflow: auto;
 `
-// color: ${false ? 'blue'  : 'red'}
 
 function App() {
-    // If there are some dishes locally set them as initial value for dishes
+  // If there are some dishes locally set them as initial value for dishes
   const [dishes, setDishes] = useState(() => {
     const localDishes = localStorage.getItem('dishes')
     return localDishes ? JSON.parse(localDishes) : []
   })
+
   // Update local dishes everytime it changes
   useEffect(() => {
     localStorage.setItem('dishes', JSON.stringify(dishes))
   }, [dishes])
-let x = 2;
+
+  const editDish = (dish) => {
+    // tutaj był ten problem referencji, że bez spread operatora nie działało, bo editedDishes dostawało taką samą referencję!!!
+    // const editedDishIndex = dishes.findIndex(d => d.id === dish.id);
+    // let editedDishes = [...dishes];
+    // editedDishes[editedDishIndex] = dish;
+    // setDishes(editedDishes);
+
+    // dokładnie to zrozmieć zanim zaimplementujesz w delete itp (W STASHU JEST JAK COŚ)
+    setDishes(dishes.map(d => {
+      return d.id === dish.id ? dish : d 
+    }))
+  }
+
+  // USUNĄĆ TEŻ TO 'i' i zamiast tego używać id!!
+
   return (
       <Wrapper>
         <RecipesContainer>
@@ -48,6 +64,7 @@ let x = 2;
               dish={dish}
               dishes={dishes}
               setDishes={setDishes}
+              editDish={editDish}
               />
             </>
           ))}
@@ -62,38 +79,17 @@ let x = 2;
 
 export default App;
 
-// - POTEM: ogarnij debugowanie i testowanie czy nie ma jakichś błędów niepotrzebnych
-//    - tutaj ogarnij też UNIT TEST i WALIDACJE
+// PO SKOŃCZENIU LOGIKI: 
+ 
+// - POTEM: dać animację transition na rozwijające ingridients!!
+// - ZREFAKTORUJ STYLED COMPONENTS ŻEBY PRZY MODALACH SIĘ TAK CAŁKOWICIE NIE POWTARZAŁO
 
-// - POTEM: dopracuj styl i UX, jak corsor pointer, zmiana dishName po kliknięciu itp.
+// - MAYBE BONUSOWO: i to spytać Kacpra czy się da - ZROBIĆ HOOKA NA useRecipeModal czy coś żeby nie powtarzać bardzo podobnej logiki AddRecipeModal i EditRecipeModal w Ingridients
+//   - na koniec do ulepszenia: STWÓRZ WŁASNY HOOK! np. useHover czy coś w tym stylu
+
 // - POTEM: porób duuuuuuużo komentarzy, żeby łatwiej było opowiadać co się w danym miejscu dzieje
-// - POTEM: dodać też taki sam guzik krzyżykowy z funkcją zamknięcia
-// - POTEM: ogarnij responsywność!
-// - POTEM: REFAKTOROWANIE
-// - POTEM: zapytaj trochę Kacpra i sam też wykmiń fajne unit testy!! (extra score!!)
-// - POTEM: rady z dołu
-// - POTEM BONUSOWO: i to spytać Kacpra czy się da - ZROBIĆ HOOKA NA useRecipeModal czy coś żeby nie powtarzać bardzo podobnej logiki AddRecipeModal i EditRecipeModal w Ingridients
+// INFO PRZED SPOTKANIEM: musisz przejść przez cały kod i umieć o nim świetnie opowiedzieć --> zrobić to z Kacprem i Dziobakiem rehersal!!!!!! żeby pokazać że ci pomagali, ale tego się nauczyłeś i to rozumiesz!!
 
-// także problem unique keys, bo np. jak dasz name i ingridients takie samo no to będą miały takie samo key
-
-
-// - obejrzyj tutoriale tak czy siak żeby się nauczyć i ewentualnie coś u siebie zmienić
-
-
-// fajne efekty hoverowe: https://www.youtube.com/watch?v=Fp4PlygdV5E&ab_channel=CodingWithChaim 2:43 maybe worth na koniec żeby rozwinąć apke!!
 // memo do wykorzystania!!! gou 17:20 w filmiku wyżej
 // gou to jako zrozumienie: https://www.youtube.com/watch?v=uojLJFt9SzY&ab_channel=CodingWithChaim
-
-// rady:
-// - REFAKTOROWANIE PO MVP GOU: przede wszystkim minimalizowanie użycia useState! + ulepszenia nazw funkcji itp.!
-//        - także: optymalizacja pod względem renderów (to możesz obejrzeć playliste na yt + potem zapytać Kacpra i na koniec ulepszyć) 
-        // np. ZRÓB TAK ŻEBY RENDER PONOWNY BYŁ DOPIERO PO ZAMKNIĘCIU MODALA, A NIE ZA KAŻDĄ WPISANĄ LITERĄ!!!
-// - pamiętaj o możliwości użycia (i najlepiej użyj!) useContext!! łatwe, a fajne JEŚLI GDZIEŚ PODAJESZ PROPSY PRZEZ KILKA KOMPONENTÓW!
-// - na koniec do ulepszenia: STWÓRZ WŁASNY HOOK! np. useHover czy coś w tym stylu
 // - na koniec spójrz czy nie możesz gdzieś dać useMemo lub useCallback!! albo zapytać Kacpra jak to dać --> żeby pokazać, że umiesz i przy okazji sobie powtórzyć
-// - zmień ikonę w title na jakąś fajną
-// - przenieś potem te komentarze do ggle keep
-
-// User Stories:
-
-// Unit tests will be extra scored :)

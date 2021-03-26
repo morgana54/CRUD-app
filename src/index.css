@@ -1,3 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap');
+
 body {
     margin: 0;
+    font-family: 'Lato', sans-serif;
+}
+
+.ss {
+    color: rgb(255, 153, 0);
+}
+
+hr {
+    width: 90%;
+    margin-bottom: 20px;
+}
+
+h4 {
+    text-align: center;
+    margin-bottom: 10px;
 }
